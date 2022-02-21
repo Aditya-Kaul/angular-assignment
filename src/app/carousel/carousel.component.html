@@ -1,0 +1,70 @@
+<!-- <div class="my-5 text-center container">
+    <div class="row">
+       <div class="col-1 d-flex align-items-center justify-content-center">
+          <a href="#itemsCarousel" role="button" data-slide="prev">
+            <div class="carousel-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129" xmlns:xlink="http://www.w3.org/1999/xlink">
+                   <path d="m88.6,121.3c0.8,0.8 1.8,1.2 2.9,1.2s2.1-0.4 2.9-1.2c1.6-1.6 1.6-4.2 0-5.8l-51-51 51-51c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-54,53.9c-1.6,1.6-1.6,4.2 0,5.8l54,53.9z"/>
+                </svg>
+             </div>
+          </a>
+       </div>
+       <div class="col-10">
+          <div id="itemsCarousel" class="carousel slide">
+ 
+             <div class="carousel-inner" [ngSwitch]="carouselDisplayMode">
+                <div class="carousel-item active"*ngFor="let image of images">
+                   <div class="row" >
+                      <div  class="col-12 col-md d-flex align-items-center justify-content-center carousel-image">
+                          <img [src]="image" class="img-fluid" alt="remote">
+                      </div>
+                   </div>
+                </div>
+                <div class="carousel-item" *ngSwitchCase="'single'">
+                  <div class="row" *ngFor="let image of images">
+                     <div  class="col-12 col-md d-flex align-items-center justify-content-center carousel-image">
+                         <img [src]="image" class="img-fluid" alt="remote">
+                     </div>
+                  </div>
+                </div>
+             </div>
+          </div>
+          
+       </div>
+       <div class="col-1 d-flex align-items-center justify-content-center">
+           <a href="#itemsCarousel" data-slide="next">
+          <div class="carousel-nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <path d="m40.4,121.3c-0.8,0.8-1.8,1.2-2.9,1.2s-2.1-0.4-2.9-1.2c-1.6-1.6-1.6-4.2 0-5.8l51-51-51-51c-1.6-1.6-1.6-4.2 0-5.8 1.6-1.6 4.2-1.6 5.8,0l53.9,53.9c1.6,1.6 1.6,4.2 0,5.8l-53.9,53.9z"/>
+             </svg>
+          </div>
+          </a>
+       </div>
+    </div>
+ </div> -->
+ 
+ <ngb-carousel  class="carousel-multi-item multi-animation" [animation]="'slide'"
+  [ngSwitch]="carouselDisplayMode">
+
+   <ng-container *ngSwitchCase="'single'">
+      <ng-template ngbSlide *ngFor="let image of images">
+         <div>
+             <div class="col-xs-3 col-md-3 col-lg-3 col-sm-6">
+               <img src="{{ image }}" class="img-fluid" alt="Responsive">
+             </div>
+         </div>
+     </ng-template>
+     
+   </ng-container>
+ 
+   <ng-container *ngSwitchCase="'multiple'">
+      <ng-template ngbSlide *ngFor="let image of imageDesktop">
+         <div class="row">
+            <div class="col-md-4" *ngFor="let img of image">
+               <img src="{{ img }}" class="img-fluid" alt="Responsive">
+            </div>
+         </div>
+     </ng-template>
+      
+    </ng-container>
+ </ngb-carousel>

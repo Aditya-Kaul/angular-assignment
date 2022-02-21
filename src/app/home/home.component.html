@@ -1,0 +1,226 @@
+<div class="container-fluid p-1">
+  <div class="card border-dark">
+    <div class="card-header border-dark">
+      List of items
+      <div class="float-right">
+        <button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#addItem">Add</button>
+        <button type="button" class="btn btn-danger m-1" (click)="deleteItem()">Delete</button>
+        <button type="button" class="btn btn-secondary m-1" (click)="getExelReport()"><i
+            class="fas fa-file-export"></i></button>
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          <i class="fas fa-filter"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="filteredItems('cost')">Cost > 100</a></li>
+          <li><a class="dropdown-item" (click)="filteredItems('sale price')">Sale Price > 200</a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive" #TABLE>
+        <table datatable class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Cost</th>
+              <th>Sale Price</th>
+              <th>Retail Price</th>
+              <th>Inventory</th>
+              <th>Manufacturing</th>
+              <th>Backorder</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of items; let i = index;" (click)="onSelectRow(i, item)"
+              [class.table-danger]="i === selectedRowIndex && item['toggle']">
+              <td>{{ item.name }}</td>
+              <td>{{ item.cost }}</td>
+              <td>{{ item.salePrice }}</td>
+              <td>{{ item.retailPrice }}</td>
+              <td>{{ item.inventory }}</td>
+              <td>{{ item.manufacturing }}</td>
+              <td>{{ item.backOrder }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="selectedItem?.toggle">
+    <div class="card">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img [src]="selectedItem?.image" class="img-thumbnail" alt="image">
+          <p class="text-center">MODEL NAME: {{ selectedItem?.name }}</p>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#catalogImages" role="tab">Catalog Images</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#saleOperation" role="tab">Sales Operation</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="tab-pane active" id="catalogImages" role="tabpanel">
+                <app-carousel></app-carousel>
+              </div>
+  
+              <div class="tab-pane" id="saleOperation" role="tabpanel">
+                <div class="chart-wrapper">
+                  <canvas baseChart 
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+              
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <div class="modal fade" id="addItem" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" >Add Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-10">
+                    <form [formGroup]="itemsForm" (ngSubmit)="addNewItem()">
+                      <div class="form-row">
+                          <div class="col">
+                              <div class="form-group">
+                                  <label for="name">Name</label>
+                                  <input class="form-control" type="text" id="name" formControlName="name">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.name.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.name">
+                                  <div *ngIf="itemsFormControls?.name.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                  
+                              <div class="form-group">
+                                  <label for="cost">Cost</label>
+                                  <input class="form-control" type="text" id="cost" formControlName="cost">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.cost.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.cost">
+                                  <div *ngIf="itemsFormControls?.cost.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                  
+                              <div class="form-group">
+                                  <label for="salePrice">Sale Price</label>
+                                  <input class="form-control" type="text" id="salePrice" formControlName="salePrice">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.salePrice.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.salePrice">
+                                  <div *ngIf="itemsFormControls?.salePrice.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                  
+                              <div class="form-group">
+                                  <label for="retailPrice">Retail Price</label>
+                                  <input class="form-control" type="text" id="retailPrice" formControlName="retailPrice">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.retailPrice.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.retailPrice">
+                                  <div *ngIf="itemsFormControls?.retailPrice.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          
+                  
+                          <div class="col">
+                              <div class="form-group">
+                                  <label for="inventory">Inventory</label>
+                                  <input class="form-control" type="text" id="inventory" formControlName="inventory">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.inventory.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.inventory">
+                                  <div *ngIf="itemsFormControls?.inventory.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                  
+                              <div class="form-group">
+                                  <label for="manufacturing">Manufacturing</label>
+                                  <input class="form-control" type="text" id="manufacturing" formControlName="manufacturing">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.manufacturing.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.manufacturing">
+                                  <div *ngIf="itemsFormControls?.manufacturing.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                  
+                              <div class="form-group">
+                                  <label for="backOrder">Back Order</label>
+                                  <input class="form-control" type="text" id="backOrder" formControlName="backOrder">
+                              </div>
+                              <div *ngIf="submitted && itemsFormControls?.backOrder.errors" class="invalid">
+                                <div *ngFor="let validation of validation_messages.backOrder">
+                                  <div *ngIf="itemsFormControls?.backOrder.errors[validation.type]">
+                                    <span>{{ validation.message }}</span>
+                                  </div>
+                                </div>
+                              </div>  
+                  
+                              <div class="form-group">
+                                  <label for="category">Category</label>
+                                  <input class="form-control" type="text" id="category">
+                              </div>
+                          </div>
+                         
+                          
+                      </div>
+                      <div class="float-right">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary m-1">Save changes</button>
+                        </div>
+                  </form>
+                  </div>
+                </div>
+        </div>
+        <!-- ./modal body -->
+      </div>
+    </div>
+  </div>
+  <!-- ./modal -->
+
+</div>
